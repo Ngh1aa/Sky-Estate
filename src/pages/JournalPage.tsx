@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { properties } from '../data/properties';
-import { getLivingQualities, getResidenceTitle } from '../data/living';
+import { getLivingQualities, getResidenceTitle, khoangProperties } from '../data/living';
 
 const notes = [
   { title: 'Why morning light changes the room before furniture does', tag: 'Light', body: 'Orientation, depth and openings can matter more to daily comfort than another layer of decoration.' },
@@ -31,7 +30,7 @@ export default function JournalPage() {
         <section className="container-main pb-24">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-14">
             {notes.map((note, index) => {
-              const residence = properties.find((property) => getLivingQualities(property).includes(note.tag as ReturnType<typeof getLivingQualities>[number])) ?? properties[index];
+              const residence = khoangProperties.find((property) => getLivingQualities(property).includes(note.tag as ReturnType<typeof getLivingQualities>[number])) ?? khoangProperties[index];
               return (
                 <article key={note.title} className="border-t border-border pt-4">
                   <p className="utility-label">{String(index + 1).padStart(2, '0')} / {note.tag}</p>
