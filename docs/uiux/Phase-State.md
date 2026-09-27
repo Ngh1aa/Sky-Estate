@@ -2,15 +2,13 @@
 
 ## Current phase
 
-`PROMPT_03_FINAL_QA`
+`PROMPT_04_AUTHORIZED_RELEASE`
 
 ## Result
 
 # PASSED
 
-KHOẢNG has completed structural implementation, rendered representative review, all-route Final QA, accessibility automation, critical interaction smoke testing and human screenshot review on `feature/khoang-phase-2`.
-
-No merge or production deployment has been performed.
+KHOẢNG has completed the UIUX Factory lifecycle through authorised production release: structural implementation, responsive visual QA, all-route Final QA, accessibility automation, critical interaction smoke, merge, GitHub Pages deployment, production-path remediation and public production smoke verification.
 
 ## Product / Design Contract retained
 
@@ -20,13 +18,25 @@ No merge or production deployment has been performed.
 - Core mechanic: **Living Index**
 - Visual adjectives: **Architectural · Quiet · Tactile**
 - Responsive scope: `responsive_all`
-- Release authority: `NO_RELEASE`
+- Release authority: **AUTHORIZED / EXECUTED**
+
+## Production
+
+- Production URL: **https://ngh1aa.github.io/Sky-Estate/**
+- Hosting: GitHub Pages
+- Router in production: HashRouter
+- Project base path: `/Sky-Estate/`
+- Release branch: `main`
+- Release PR: `#1 — Phase 2: KHOẢNG Living Discovery redesign`
+- PR merge method: squash
+- Product release merge commit: `a9583ed95f253f760b41d91de5859bb398c38f58`
+- Production base-path remediation commit: `04d18716cb2366ff8099e4909080d3ac29509694`
 
 ## Active routes verified
 
-- `/` — Home / Living Discovery Entry
-- `/discover` — Living Index + conventional facts discovery
-- `/residences/:id` — spatial/lifestyle decision detail
+- `/` / `#/` — Home / Living Discovery Entry
+- `/discover` / `#/discover` — Living Index + conventional facts discovery
+- `/residences/:id` / `#/residences/:id` — spatial/lifestyle decision detail
 - `/collections` — Ways of Living
 - `/journal` — Field Notes
 - `/shortlist` — local saved residences
@@ -39,13 +49,7 @@ Compatibility redirects remain:
 - `/listings/:id` → `/residences/:id`
 - `/contact` → `/consult`
 
-## Preview / rendered evidence
-
-The connected Vercel session did not expose a usable deployment action and Sky-Estate was not present as a connected Vercel project. No public preview URL was fabricated.
-
-Rendered verification therefore used an **ephemeral Vite preview server inside GitHub Actions**.
-
-### Phase 2 representative gate
+## Phase 2 representative gate
 
 Workflow: `KHOANG Phase 2 Visual QA`
 
@@ -61,24 +65,22 @@ Widths:
 
 Result after remediation: **PASS**.
 
-### Final all-route gate
+## Final all-route gate
 
 Workflow: `KHOANG Final QA`
 
-Final passing run: `36343515144`
-
-Artifact: `khoang-final-qa`
+Final passing run before release: `36343515144`
 
 Coverage:
 - 9 routes × 3 viewports = **27 rendered cases**
 - 375 / 768 / 1440
-- reduced-motion browser context for rendered cases
+- reduced-motion browser context
 
 Final automated result:
 - hard failures: **0**
 - serious/critical axe violations: **0**
 - moderate axe violations recorded by the QA gate: **0**
-- horizontal overflow: **0** across covered cases
+- horizontal overflow: **0**
 - broken images: **0**
 - console errors: **0**
 - page errors: **0**
@@ -86,14 +88,90 @@ Final automated result:
 - single-H1 structural checks: **PASS**
 - shared nav/main presence: **PASS**
 
-## Critical interaction smoke
-
-Final QA verifies:
-
+Critical interaction smoke:
 - Home Living Index selection — **PASS**
 - Discover search refinement — **PASS**
 - Residence save → Shortlist continuity — **PASS**
 - Mobile navigation opens with primary links — **PASS**
+
+## Prompt 4 — release execution
+
+### PR transition and merge
+
+PR #1 was moved from Draft to Ready for Review only after the latest Phase 2 CI, visual QA and Final QA were green.
+
+The PR was then squash-merged into `main` with expected-head protection.
+
+Merge result: **PASS**.
+
+### GitHub Pages deployment
+
+Workflow: `Deploy to GitHub Pages`
+
+The production deploy created the public environment URL:
+
+`https://ngh1aa.github.io/Sky-Estate/`
+
+Build and deploy jobs completed successfully.
+
+### Production-only P1 — incorrect Vite project base path
+
+The first real production smoke exposed a defect not visible in local/ephemeral preview QA:
+
+- the public document returned HTTP 200;
+- the app did not hydrate;
+- KHOẢNG content was absent from the rendered body.
+
+Root cause:
+- `vite.config.ts` used `base: '/'`;
+- GitHub Pages serves this repository from `/Sky-Estate/`;
+- generated JS/CSS therefore pointed to domain-root `/assets/...` instead of `/Sky-Estate/assets/...`.
+
+Root fix:
+- Vite base is now deployment-aware using `VITE_BASE_PATH`;
+- local and ephemeral previews retain `/`;
+- GitHub Pages build explicitly sets `VITE_BASE_PATH: '/Sky-Estate/'`;
+- production keeps `VITE_USE_HASH_ROUTER: 'true'`.
+
+Verified production artifact now references:
+- `/Sky-Estate/favicon.svg`
+- `/Sky-Estate/assets/index-*.js`
+- `/Sky-Estate/assets/index-*.css`
+
+Result: **FIXED / PASS**.
+
+### Production smoke gate
+
+Workflow: `KHOANG Production Smoke`
+
+Final passing run: `36344610119`
+
+Artifact: `khoang-production-smoke`
+
+Public production cases:
+- Home — 375
+- Home — 1440
+- Discover — 375
+- Discover — 1440
+- Residence Detail — 375
+- Residence Detail — 1440
+
+Production result:
+- cases: **6**
+- failures: **0**
+- HTTP status: **200** for all cases
+- correct KHOẢNG document titles: **PASS**
+- expected route H1: **PASS**
+- one H1 per page: **PASS**
+- shared main/nav present: **PASS**
+- horizontal overflow: **0**
+- broken images: **0**
+- console errors: **0**
+- page errors: **0**
+- asset base contains `/Sky-Estate/assets/`: **PASS**
+- legacy body-text leak (`Sky Estate`, `Aether Lane`, `Galaxy Home`, `Aether Peak`): **0**
+
+Production screenshots were also opened after automation and visually checked. Desktop and mobile retain the approved KHOẢNG hierarchy, media ownership and responsive composition.
 
 ## Root-cause remediation history
 
@@ -102,9 +180,9 @@ Final QA verifies:
 Human screenshot review caught the inherited `galaxy-home-pinnacle` fantasy fixture in active product media.
 
 Root fix:
-- `src/data/living.ts` now owns `khoangProperties`;
+- `src/data/living.ts` owns `khoangProperties`;
 - `galaxy-home-pinnacle` is excluded from active KHOẢNG inventory;
-- Home, Discover, Residence Detail, Shortlist, Collections, Field Notes and Consult now resolve product context from the curated inventory owner.
+- Home, Discover, Residence Detail, Shortlist, Collections, Field Notes and Consult resolve product context from the curated inventory owner.
 
 Result: **FIXED / PASS**.
 
@@ -113,46 +191,53 @@ Result: **FIXED / PASS**.
 Axe caught shared muted foreground contrast below the intended threshold.
 
 Root fix:
-- strengthened `--color-muted` from the weaker inherited value to `#62665e`.
+- strengthened `--color-muted` to `#62665e`.
 
 Result: **FIXED / PASS**.
 
 ### P1 — link foreground cascade
 
-Axe isolated two Ink-background CTA links whose foreground inherited Graphite despite `text-white` classes.
+Axe isolated Ink-background CTA links whose foreground inherited Graphite.
 
 Root cause:
 - custom unlayered `a { color: inherit; }` overrode Tailwind utility-layer link colors.
 
 Root fix:
-- removed the redundant global anchor color override and let Tailwind Preflight + explicit utilities own link color.
+- removed the redundant global anchor color override.
 
 Result: **FIXED / PASS**.
 
 ### P1 — residence document title
 
-Direct rendered QA caught an empty document title on the dynamic Residence Detail route.
+Rendered QA caught an empty document title on the dynamic Residence Detail route.
 
 Root fix:
 - retained Helmet metadata;
-- added route/property-aware `document.title` synchronization for the dynamic detail lifecycle.
+- added route/property-aware `document.title` synchronization.
 
 Result: **FIXED / PASS**.
 
 ### P1 — supporting routes bypassed curated inventory
 
-Human all-route review caught `/collections` still reading the raw inherited fixture source; review also found Field Notes and Consult could resolve raw inventory even when the current screenshot did not visibly expose the problem.
+Human all-route review caught supporting routes reading raw inherited fixture data.
 
 Root fix:
 - Collections, Field Notes and Consult now consume `khoangProperties`.
 
 Result: **FIXED / PASS**.
 
+### P1 — GitHub Pages base path
+
+Production smoke caught the project-subpath asset failure described above.
+
+Root fix:
+- deployment-aware Vite base path + explicit `/Sky-Estate/` production build setting.
+
+Result: **FIXED / PASS**.
+
 ## Human visual veto
 
-Final screenshots were opened and inspected after the automated PASS.
-
-Reviewed for:
+Final pre-release and production screenshots were opened and inspected for:
 - design hierarchy
 - responsive recomposition
 - media crop / ownership
@@ -161,11 +246,12 @@ Reviewed for:
 - CTA foreground/background pairing
 - collection/editorial consistency
 - mobile long-page rhythm
+- production hydration and asset correctness
 
-Outcome: **PASS — no remaining DUE-NOW P0/P1 visual defect identified.**
+Outcome: **PASS — no remaining DUE-NOW P0/P1 defect identified.**
 
 Known P2 / non-blocking craft opportunity:
-- some editorial imagery repeats because the synthetic prototype inventory is intentionally small. Increasing the curated media set would improve editorial richness but is not required for correctness or the current Final QA exit gate.
+- some editorial imagery repeats because the synthetic prototype inventory is intentionally small. Increasing the curated media set would improve editorial richness but is not required for correctness or the release gate.
 
 ## OLD → NEW / Design Contract status
 
@@ -173,7 +259,7 @@ Known P2 / non-blocking craft opportunity:
 
 **PASS for structural delta**, with documented evidence limitation.
 
-Prompt 1 used source/layout/component fallback evidence rather than a verified live OLD pixel capture. Therefore Final QA does not claim pixel-perfect OLD→NEW screenshot equivalence.
+Prompt 1 used source/layout/component fallback evidence rather than a verified live OLD pixel capture. The project does not claim pixel-perfect OLD→NEW screenshot equivalence.
 
 Verified structural delta includes:
 - cosmic luxury marketplace → design-led Living Discovery
@@ -186,7 +272,7 @@ Verified structural delta includes:
 
 **PASS**.
 
-The rendered site preserves:
+The released site preserves:
 - Architectural · Quiet · Tactile character
 - Paper / Chalk / Ink / Graphite / Moss palette
 - sans-led editorial typography
@@ -203,21 +289,24 @@ The rendered site preserves:
 
 | Requirement | State | Evidence |
 |---|---|---|
-| Structural redesign | DONE_VERIFIED | branch diff + rendered routes |
+| Structural redesign | DONE_VERIFIED | merged implementation + rendered routes |
 | Living Index | DONE_VERIFIED | source + interaction smoke |
 | 375 / 768 / 1440 responsive review | DONE_VERIFIED | Final QA screenshots |
 | Shared nav/footer/theme sanity | DONE_VERIFIED | all-route screenshots |
 | Media/focal integrity | DONE_VERIFIED | screenshots + curated-inventory remediation |
 | Lint | DONE_VERIFIED | GitHub Actions |
 | Production build | DONE_VERIFIED | GitHub Actions |
-| Serious/critical automated a11y gate | DONE_VERIFIED | 0 in final run |
+| Serious/critical automated a11y gate | DONE_VERIFIED | 0 in Final QA |
 | Critical interaction smoke | DONE_VERIFIED | 4/4 PASS |
-| Human visual veto | DONE_VERIFIED | final screenshot inspection |
+| Human visual veto | DONE_VERIFIED | pre-release + production screenshots |
 | NEW → Design Contract | DONE_VERIFIED | final visual review |
 | NEW → NEW cross-page consistency | DONE_VERIFIED | 9-route review |
 | OLD → NEW structural proof | DONE_VERIFIED | fallback OLD source evidence + NEW renders |
+| PR merge | DONE_VERIFIED | PR #1 squash merge |
+| GitHub Pages deploy | DONE_VERIFIED | production workflow |
+| Production base path / hydration | DONE_VERIFIED | artifact + public smoke |
+| Production smoke | DONE_VERIFIED | run 36344610119, 6/6 PASS |
 | Direct user validation | PENDING_FUTURE_PHASE | no user-research outcome claims made |
-| Merge / production release | N/A_JUSTIFIED | not authorised |
 
 ## Blocker accounting
 
@@ -232,6 +321,6 @@ The rendered site preserves:
 
 ## Release status
 
-`NO_RELEASE`
+# RELEASED — PRODUCTION VERIFIED
 
-Draft PR #1 remains open. Nothing has been merged into `main` and no production deployment has been performed.
+Production: **https://ngh1aa.github.io/Sky-Estate/**
