@@ -1,4 +1,4 @@
-import type { Property } from './properties';
+import { properties, type Property } from './properties';
 
 export const livingQualities = [
   'Light',
@@ -14,6 +14,14 @@ export const livingQualities = [
 ] as const;
 
 export type LivingQuality = (typeof livingQualities)[number];
+
+/**
+ * Active KHOẢNG prototype inventory.
+ * The inherited Galaxy/Aether fantasy fixture is intentionally excluded from
+ * all active product experiences because it conflicts with the Design Contract's
+ * real-architecture media direction.
+ */
+export const khoangProperties = properties.filter((property) => property.id !== 'galaxy-home-pinnacle');
 
 export const qualityDescriptions: Record<LivingQuality, string> = {
   Light: 'Rooms shaped by daylight and open views.',
