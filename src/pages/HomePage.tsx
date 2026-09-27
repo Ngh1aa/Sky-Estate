@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
-import { properties } from '../data/properties';
 import {
   getLivingQualities,
   getResidenceTitle,
+  khoangProperties,
   livingQualities,
   matchReason,
   qualityDescriptions,
@@ -31,7 +31,7 @@ export default function HomePage() {
   };
 
   const matched = useMemo(() => {
-    return [...properties]
+    return [...khoangProperties]
       .map((property) => ({
         property,
         score: getLivingQualities(property).filter((quality) => selected.includes(quality)).length,
@@ -41,7 +41,7 @@ export default function HomePage() {
   }, [selected]);
 
   const discoverHref = `/discover?qualities=${encodeURIComponent(selected.join(','))}`;
-  const lead = matched[0]?.property ?? properties[0];
+  const lead = matched[0]?.property ?? khoangProperties[0];
 
   return (
     <>
@@ -139,7 +139,7 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-12">
               {featuredCollections.map((collection, index) => {
-                const residence = properties.find((property) => getLivingQualities(property).includes(collection.quality)) ?? properties[index];
+                const residence = khoangProperties.find((property) => getLivingQualities(property).includes(collection.quality)) ?? khoangProperties[index];
                 return (
                   <Link key={collection.title} to={`/discover?qualities=${encodeURIComponent(collection.quality)}`} className="group block">
                     <div className={`overflow-hidden bg-bg ${index % 2 ? 'aspect-[5/4]' : 'aspect-[4/3]'}`}>
