@@ -2,17 +2,17 @@
 
 ## Current phase
 
-`PROMPT_02_STRUCTURAL_IMPLEMENTATION`
+`PROMPT_03_FINAL_QA`
 
 ## Result
 
 # PASSED
 
-Phase 2 structural implementation and its DUE-NOW rendered representative gate are complete on `feature/khoang-phase-2`.
+KHOẢNG has completed structural implementation, rendered representative review, all-route Final QA, accessibility automation, critical interaction smoke testing and human screenshot review on `feature/khoang-phase-2`.
 
 No merge or production deployment has been performed.
 
-## Selected direction retained
+## Product / Design Contract retained
 
 - Name: **KHOẢNG**
 - Descriptor: **Living Discovery**
@@ -20,155 +20,218 @@ No merge or production deployment has been performed.
 - Core mechanic: **Living Index**
 - Visual adjectives: **Architectural · Quiet · Tactile**
 - Responsive scope: `responsive_all`
-
-## Implementation branch / review surface
-
-- Branch: `feature/khoang-phase-2`
-- Draft PR: `#1 — Phase 2: KHOẢNG Living Discovery redesign`
-- Base: `main`
 - Release authority: `NO_RELEASE`
 
-## Structural implementation completed
+## Active routes verified
 
-### Shared owners
+- `/` — Home / Living Discovery Entry
+- `/discover` — Living Index + conventional facts discovery
+- `/residences/:id` — spatial/lifestyle decision detail
+- `/collections` — Ways of Living
+- `/journal` — Field Notes
+- `/shortlist` — local saved residences
+- `/about` — About the Method
+- `/consult` — preference-aware non-sending prototype enquiry
+- `*` — KHOẢNG 404
 
-- Paper / Chalk / Ink / Graphite / Moss design system replaces cosmic purple/glass styling;
-- editorial navigation and transparent portfolio-prototype footer replace the inherited brokerage chrome;
-- legacy `.glass`, `.gradient-*`, `.cosmic-bg` utility behavior is neutralised;
-- Instrument Sans + IBM Plex Mono entry point with safe fallbacks;
-- document metadata migrated to KHOẢNG.
+Compatibility redirects remain:
+- `/listings` → `/discover`
+- `/listings/:id` → `/residences/:id`
+- `/contact` → `/consult`
 
-### Product roles
+## Preview / rendered evidence
 
-Implemented:
-- `/` — Home / Living Discovery Entry;
-- `/discover` — Living Index + conventional facts discovery;
-- `/residences/:id` — spatial/lifestyle decision detail;
-- `/collections` — Ways of Living;
-- `/journal` — Field Notes;
-- `/shortlist` — local saved residences;
-- `/about` — About the Method;
-- `/consult` — preference-aware non-sending prototype enquiry;
-- `*` — KHOẢNG 404.
+The connected Vercel session did not expose a usable deployment action and Sky-Estate was not present as a connected Vercel project. No public preview URL was fabricated.
 
-Compatibility redirects:
-- `/listings` → `/discover`;
-- `/listings/:id` → `/residences/:id`;
-- `/contact` → `/consult`.
+Rendered verification therefore used an **ephemeral Vite preview server inside GitHub Actions**.
 
-## Data / claim policy
-
-`src/data/living.ts` owns the KHOẢNG interpretation layer.
-
-Visible product rules:
-- Living Index is descriptive prototype metadata, not an objective score;
-- inventory is disclosed as synthetic prototype content;
-- inherited founder/team/office/transaction/testimonial claims are absent from active experiences;
-- unsupported architect/interior-brand language is not used as decision copy.
-
-### Visual-remediation owner fix
-
-Rendered review caught one P1: the inherited `galaxy-home-pinnacle` fantasy fixture still appeared in Home collections, Discover and Related residences.
-
-Root-cause fix:
-- introduced `khoangProperties` as the active inventory owner;
-- excluded `galaxy-home-pinnacle` from active KHOẢNG experiences;
-- Home, Discover, Residence Detail and Shortlist now consume the curated owner instead of raw fixture data.
-
-The inherited `properties.ts` file remains a technical fixture source, but the fantasy record is no longer reachable through active KHOẢNG product surfaces.
-
-## Technical verification
-
-### CI / build
-
-GitHub Actions verifies:
-- `npm ci` — PASS;
-- `npm run lint` — PASS;
-- `npm run build` — PASS.
-
-Latest Phase 2 head after remediation: `39ae2ca0aac4e23451635702a21e91d14afbf80c`.
-
-### Rendered preview verification
-
-Because the connected Vercel deploy action was unavailable in this session and no Vercel project existed for Sky-Estate, the review used an **ephemeral preview server inside GitHub Actions** rather than manufacturing a public production-like URL.
+### Phase 2 representative gate
 
 Workflow: `KHOANG Phase 2 Visual QA`
 
-Final run: `36342111089`
-
-Artifact: `khoang-phase2-visual-qa`
-
-Representative routes:
+Representative roles:
 1. `/`
 2. `/discover`
 3. `/residences/villa-aurora-thao-dien`
 
-Rendered widths:
-- 375px;
-- 768px;
-- 1440px.
+Widths:
+- 375px
+- 768px
+- 1440px
 
-Automated evidence across all 9 cases:
-- HTTP 200 — PASS;
-- horizontal overflow — 0;
-- broken images — 0;
-- console errors — 0;
-- page errors — 0;
-- main/nav presence — PASS.
+Result after remediation: **PASS**.
 
-Human screenshot review:
-- hierarchy — PASS;
-- responsive recomposition — PASS;
-- image ownership/crop — PASS;
-- Living Index visibility — PASS;
-- Discover filter/result ownership — PASS;
-- Residence media/detail hierarchy — PASS;
-- inherited fantasy media — FIXED / PASS;
-- remaining DUE-NOW visual P0/P1 — 0.
+### Final all-route gate
 
-Known non-blocking polish:
-- some editorial collection imagery is intentionally reused because the synthetic prototype inventory is small; this is a P2 content-craft opportunity, not a Phase 2 blocker.
+Workflow: `KHOANG Final QA`
+
+Final passing run: `36343515144`
+
+Artifact: `khoang-final-qa`
+
+Coverage:
+- 9 routes × 3 viewports = **27 rendered cases**
+- 375 / 768 / 1440
+- reduced-motion browser context for rendered cases
+
+Final automated result:
+- hard failures: **0**
+- serious/critical axe violations: **0**
+- moderate axe violations recorded by the QA gate: **0**
+- horizontal overflow: **0** across covered cases
+- broken images: **0**
+- console errors: **0**
+- page errors: **0**
+- document-title checks: **PASS**
+- single-H1 structural checks: **PASS**
+- shared nav/main presence: **PASS**
+
+## Critical interaction smoke
+
+Final QA verifies:
+
+- Home Living Index selection — **PASS**
+- Discover search refinement — **PASS**
+- Residence save → Shortlist continuity — **PASS**
+- Mobile navigation opens with primary links — **PASS**
+
+## Root-cause remediation history
+
+### P1 — inherited fantasy media leaked into KHOẢNG
+
+Human screenshot review caught the inherited `galaxy-home-pinnacle` fantasy fixture in active product media.
+
+Root fix:
+- `src/data/living.ts` now owns `khoangProperties`;
+- `galaxy-home-pinnacle` is excluded from active KHOẢNG inventory;
+- Home, Discover, Residence Detail, Shortlist, Collections, Field Notes and Consult now resolve product context from the curated inventory owner.
+
+Result: **FIXED / PASS**.
+
+### P1 — shared text contrast
+
+Axe caught shared muted foreground contrast below the intended threshold.
+
+Root fix:
+- strengthened `--color-muted` from the weaker inherited value to `#62665e`.
+
+Result: **FIXED / PASS**.
+
+### P1 — link foreground cascade
+
+Axe isolated two Ink-background CTA links whose foreground inherited Graphite despite `text-white` classes.
+
+Root cause:
+- custom unlayered `a { color: inherit; }` overrode Tailwind utility-layer link colors.
+
+Root fix:
+- removed the redundant global anchor color override and let Tailwind Preflight + explicit utilities own link color.
+
+Result: **FIXED / PASS**.
+
+### P1 — residence document title
+
+Direct rendered QA caught an empty document title on the dynamic Residence Detail route.
+
+Root fix:
+- retained Helmet metadata;
+- added route/property-aware `document.title` synchronization for the dynamic detail lifecycle.
+
+Result: **FIXED / PASS**.
+
+### P1 — supporting routes bypassed curated inventory
+
+Human all-route review caught `/collections` still reading the raw inherited fixture source; review also found Field Notes and Consult could resolve raw inventory even when the current screenshot did not visibly expose the problem.
+
+Root fix:
+- Collections, Field Notes and Consult now consume `khoangProperties`.
+
+Result: **FIXED / PASS**.
+
+## Human visual veto
+
+Final screenshots were opened and inspected after the automated PASS.
+
+Reviewed for:
+- design hierarchy
+- responsive recomposition
+- media crop / ownership
+- fantasy / old-brand leakage
+- cross-page KHOẢNG visual DNA
+- CTA foreground/background pairing
+- collection/editorial consistency
+- mobile long-page rhythm
+
+Outcome: **PASS — no remaining DUE-NOW P0/P1 visual defect identified.**
+
+Known P2 / non-blocking craft opportunity:
+- some editorial imagery repeats because the synthetic prototype inventory is intentionally small. Increasing the curated media set would improve editorial richness but is not required for correctness or the current Final QA exit gate.
+
+## OLD → NEW / Design Contract status
+
+### OLD → NEW
+
+**PASS for structural delta**, with documented evidence limitation.
+
+Prompt 1 used source/layout/component fallback evidence rather than a verified live OLD pixel capture. Therefore Final QA does not claim pixel-perfect OLD→NEW screenshot equivalence.
+
+Verified structural delta includes:
+- cosmic luxury marketplace → design-led Living Discovery
+- generic listing filters → Living Index + conventional facts
+- generic property detail → spatial/lifestyle evaluation journey
+- fake brokerage authority → transparent portfolio-prototype framing
+- repetitive glass/gradient card system → editorial/asymmetric composition system
+
+### NEW → DESIGN CONTRACT
+
+**PASS**.
+
+The rendered site preserves:
+- Architectural · Quiet · Tactile character
+- Paper / Chalk / Ink / Graphite / Moss palette
+- sans-led editorial typography
+- restrained motion / reduced-motion handling
+- Living Index as primary signature interaction
+- no active fantasy-property imagery
+- no fake social proof / brokerage authority claims
+
+### NEW → NEW cross-page consistency
+
+**PASS** across Home, Discover, Residence Detail, Collections, Journal, About, Consult, Shortlist and 404.
 
 ## Requirement ledger
 
-| Requirement | State | Evidence / owner |
+| Requirement | State | Evidence |
 |---|---|---|
-| Phase 1 Design Contract retained | DONE_VERIFIED | source / docs |
-| Structural OLD→NEW implementation | DONE_VERIFIED | branch diff |
-| Functional Living Index | DONE_VERIFIED | Home + Discover source + rendered QA |
-| Home role implementation | DONE_VERIFIED | rendered 375/768/1440 |
-| Discovery role implementation | DONE_VERIFIED | rendered 375/768/1440 |
-| Residence Detail role implementation | DONE_VERIFIED | rendered 375/768/1440 |
-| Supporting sitemap rollout | DONE_VERIFIED | routes + source |
-| Shared theme/nav/footer migration | DONE_VERIFIED | source + screenshots |
+| Structural redesign | DONE_VERIFIED | branch diff + rendered routes |
+| Living Index | DONE_VERIFIED | source + interaction smoke |
+| 375 / 768 / 1440 responsive review | DONE_VERIFIED | Final QA screenshots |
+| Shared nav/footer/theme sanity | DONE_VERIFIED | all-route screenshots |
+| Media/focal integrity | DONE_VERIFIED | screenshots + curated-inventory remediation |
 | Lint | DONE_VERIFIED | GitHub Actions |
 | Production build | DONE_VERIFIED | GitHub Actions |
-| Representative rendered screenshots | DONE_VERIFIED | run 36342111089 artifact |
-| 375px rendered review | DONE_VERIFIED | screenshot inspection |
-| 768px rendered review | DONE_VERIFIED | screenshot inspection |
-| 1440px rendered review | DONE_VERIFIED | screenshot inspection |
-| Media/focal integrity | DONE_VERIFIED | screenshot inspection + P1 remediation |
-| DUE-NOW visual P0/P1 | DONE_VERIFIED | 0 remaining |
-| OLD→NEW comparable rendered proof | PENDING_FUTURE_PHASE | Final QA |
-| Full shared-owner all-route sanity | PENDING_FUTURE_PHASE | Final QA |
-| Accessibility rendered/state QA | PENDING_FUTURE_PHASE | Final QA |
-| Direct user validation | PENDING_FUTURE_PHASE | validation phase |
-| Merge/deploy | N/A_JUSTIFIED | not authorised |
+| Serious/critical automated a11y gate | DONE_VERIFIED | 0 in final run |
+| Critical interaction smoke | DONE_VERIFIED | 4/4 PASS |
+| Human visual veto | DONE_VERIFIED | final screenshot inspection |
+| NEW → Design Contract | DONE_VERIFIED | final visual review |
+| NEW → NEW cross-page consistency | DONE_VERIFIED | 9-route review |
+| OLD → NEW structural proof | DONE_VERIFIED | fallback OLD source evidence + NEW renders |
+| Direct user validation | PENDING_FUTURE_PHASE | no user-research outcome claims made |
+| Merge / production release | N/A_JUSTIFIED | not authorised |
 
 ## Blocker accounting
 
 - DUE-NOW `BLOCKED`: **0**
 - DUE-NOW `UNACCOUNTED`: **0**
-- Remaining DUE-NOW P0/P1: **0**
+- Remaining DUE-NOW P0: **0**
+- Remaining DUE-NOW P1: **0**
 
-## Handoff
+## Final QA result
 
-Phase 2 is cleared to enter `PROMPT_03_FINAL_QA`.
-
-Final QA must expand from representative sampling to shared-owner/all-route sanity, interactive-state visibility, accessibility automation + rendered review, and NEW→DESIGN CONTRACT / cross-page consistency.
+`PASSED`
 
 ## Release status
 
 `NO_RELEASE`
 
-Draft PR remains open. Nothing has been merged into `main` and no production deployment has been performed.
+Draft PR #1 remains open. Nothing has been merged into `main` and no production deployment has been performed.
