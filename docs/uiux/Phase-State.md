@@ -6,11 +6,11 @@
 
 ## Result
 
-# BLOCKED — IMPLEMENTATION COMPLETE, RENDERED VISUAL GATE PENDING
+# PASSED
 
-The structural implementation is complete on `feature/khoang-phase-2` and GitHub CI passes lint + production build. Phase 2 is not marked PASSED because representative rendered review at the declared responsive widths is a DUE-NOW gate in `MASTER-PROMPT-V7.2.md`.
+Phase 2 structural implementation and its DUE-NOW rendered representative gate are complete on `feature/khoang-phase-2`.
 
-No merge or deployment has been performed.
+No merge or production deployment has been performed.
 
 ## Selected direction retained
 
@@ -32,60 +32,22 @@ No merge or deployment has been performed.
 
 ### Shared owners
 
-- replaced cosmic purple/glass theme tokens with Paper / Chalk / Ink / Graphite / Moss system;
-- replaced floating pill navigation with restrained editorial navigation;
-- replaced old brokerage footer with transparent portfolio-prototype footer;
-- neutralised legacy `.glass`, `.gradient-*`, `.cosmic-bg` utility behavior so surviving components cannot silently restore the old aesthetic;
-- changed typography entry point to Instrument Sans + IBM Plex Mono with safe system fallbacks;
-- updated document metadata from Sky Estate / Aether Lane to KHOẢNG.
+- Paper / Chalk / Ink / Graphite / Moss design system replaces cosmic purple/glass styling;
+- editorial navigation and transparent portfolio-prototype footer replace the inherited brokerage chrome;
+- legacy `.glass`, `.gradient-*`, `.cosmic-bg` utility behavior is neutralised;
+- Instrument Sans + IBM Plex Mono entry point with safe fallbacks;
+- document metadata migrated to KHOẢNG.
 
-### Home `/`
-
-Implemented:
-- proposition-first editorial hero;
-- functional Living Index with max-3 quality selection;
-- immediate matched-residence update;
-- match explanation;
-- Ways of Living editorial collections;
-- residence reading / spatial-quality story;
-- transparent method section;
-- no fake social proof, testimonials, transaction counts or luxury-superlative CTA band.
-
-### Discovery `/discover`
+### Product roles
 
 Implemented:
-- Living Index relevance filtering;
-- search;
-- location;
-- property type;
-- bedrooms;
-- price ceiling;
-- relevance / price / area sorting;
-- match explanation on each residence;
-- intentional zero-result recovery;
-- local browser shortlist state;
-- prototype-inventory disclosure.
-
-### Residence detail `/residences/:id`
-
-Implemented:
-- spatial identity before lead capture;
-- media hierarchy + thumbnail navigation;
-- Living Index reading;
-- safe prototype description instead of unsupported architect/interior-brand sales claims;
-- essential fact cluster;
-- amenities/context;
-- explicit synthetic-inventory disclosure;
-- preference-aware consult continuation;
-- related residences based on shared living qualities.
-
-### Supporting sitemap rollout
-
-Implemented:
+- `/` — Home / Living Discovery Entry;
+- `/discover` — Living Index + conventional facts discovery;
+- `/residences/:id` — spatial/lifestyle decision detail;
 - `/collections` — Ways of Living;
 - `/journal` — Field Notes;
 - `/shortlist` — local saved residences;
-- `/about` — About the Method, replacing fake company/founder/team history;
+- `/about` — About the Method;
 - `/consult` — preference-aware non-sending prototype enquiry;
 - `*` — KHOẢNG 404.
 
@@ -96,61 +58,76 @@ Compatibility redirects:
 
 ## Data / claim policy
 
-`src/data/living.ts` provides the prototype Living Index interpretation layer.
+`src/data/living.ts` owns the KHOẢNG interpretation layer.
 
-Rules implemented in visible UI:
-- Living Index is described as descriptive prototype metadata, not an objective score;
-- current inventory is disclosed as synthetic prototype content;
-- old founder/team/office/transaction/testimonial claims are removed from active page experiences;
-- detail content no longer uses inherited unsupported architect/interior-brand attribution as decision copy.
+Visible product rules:
+- Living Index is descriptive prototype metadata, not an objective score;
+- inventory is disclosed as synthetic prototype content;
+- inherited founder/team/office/transaction/testimonial claims are absent from active experiences;
+- unsupported architect/interior-brand language is not used as decision copy.
 
-The legacy `properties.ts` fixture still exists as a technical mock-data source. Prompt 3 may further sanitize dead/unrendered legacy fixture strings if source-level content hygiene is required.
+### Visual-remediation owner fix
+
+Rendered review caught one P1: the inherited `galaxy-home-pinnacle` fantasy fixture still appeared in Home collections, Discover and Related residences.
+
+Root-cause fix:
+- introduced `khoangProperties` as the active inventory owner;
+- excluded `galaxy-home-pinnacle` from active KHOẢNG experiences;
+- Home, Discover, Residence Detail and Shortlist now consume the curated owner instead of raw fixture data.
+
+The inherited `properties.ts` file remains a technical fixture source, but the fantasy record is no longer reachable through active KHOẢNG product surfaces.
 
 ## Technical verification
 
-### GitHub Actions
+### CI / build
 
-Workflow: `KHOANG Phase 2 CI`
+GitHub Actions verifies:
+- `npm ci` — PASS;
+- `npm run lint` — PASS;
+- `npm run build` — PASS.
 
-Run: `36341267302`
+Latest Phase 2 head after remediation: `39ae2ca0aac4e23451635702a21e91d14afbf80c`.
 
-Verified successful steps:
-- Checkout — PASS
-- Setup Node 20 — PASS
-- `npm ci` — PASS
-- `npm run lint` — PASS
-- `npm run build` — PASS
+### Rendered preview verification
 
-CI conclusion: **SUCCESS**
+Because the connected Vercel deploy action was unavailable in this session and no Vercel project existed for Sky-Estate, the review used an **ephemeral preview server inside GitHub Actions** rather than manufacturing a public production-like URL.
 
-### Local runner limitation
+Workflow: `KHOANG Phase 2 Visual QA`
 
-A local clone attempt could not resolve `github.com` from the container network. This limitation is not represented as a project failure because the GitHub-hosted runner executed the canonical install/lint/build successfully.
+Final run: `36342111089`
 
-## Representative page gate
+Artifact: `khoang-phase2-visual-qa`
 
-Required representative roles:
+Representative routes:
+1. `/`
+2. `/discover`
+3. `/residences/villa-aurora-thao-dien`
 
-1. `/` — Home / Living Discovery Entry
-2. `/discover` — Discovery
-3. `/residences/:id` — Residence Detail
+Rendered widths:
+- 375px;
+- 768px;
+- 1440px.
 
-Required rendered widths:
-- 375px
-- 768px
-- 1440px
+Automated evidence across all 9 cases:
+- HTTP 200 — PASS;
+- horizontal overflow — 0;
+- broken images — 0;
+- console errors — 0;
+- page errors — 0;
+- main/nav presence — PASS.
 
-Current status:
+Human screenshot review:
+- hierarchy — PASS;
+- responsive recomposition — PASS;
+- image ownership/crop — PASS;
+- Living Index visibility — PASS;
+- Discover filter/result ownership — PASS;
+- Residence media/detail hierarchy — PASS;
+- inherited fantasy media — FIXED / PASS;
+- remaining DUE-NOW visual P0/P1 — 0.
 
-`BLOCKED — RENDERED EVIDENCE NOT YET AVAILABLE`
-
-Reason:
-- Sky-Estate is not currently present as a Vercel project in the connected team;
-- existing GitHub Pages workflow deploys only `main`;
-- Prompt 02 did not grant release/deploy authority;
-- therefore no temporary rendered URL was created merely to manufacture visual evidence.
-
-This blocker owns only the visual exit gate. Source implementation and technical build/lint verification are complete.
+Known non-blocking polish:
+- some editorial collection imagery is intentionally reused because the synthetic prototype inventory is small; this is a P2 content-craft opportunity, not a Phase 2 blocker.
 
 ## Requirement ledger
 
@@ -158,41 +135,37 @@ This blocker owns only the visual exit gate. Source implementation and technical
 |---|---|---|
 | Phase 1 Design Contract retained | DONE_VERIFIED | source / docs |
 | Structural OLD→NEW implementation | DONE_VERIFIED | branch diff |
-| Functional Living Index | DONE_VERIFIED | Home + Discover source, CI build |
-| Home role implementation | DONE_VERIFIED | source, CI build |
-| Discovery role implementation | DONE_VERIFIED | source, CI build |
-| Residence Detail role implementation | DONE_VERIFIED | source, CI build |
-| Supporting sitemap rollout | DONE_VERIFIED | routes + new pages |
-| Old active company/about/contact claims removed | DONE_VERIFIED | active page source |
-| Shared theme/nav/footer migration | DONE_VERIFIED | shared owner source |
-| Lint | DONE_VERIFIED | GitHub Actions run 36341267302 |
-| Production build | DONE_VERIFIED | GitHub Actions run 36341267302 |
-| Representative rendered screenshots | BLOCKED | needs authorised preview/render surface |
-| 375px rendered review | BLOCKED | same owner |
-| 768px rendered review | BLOCKED | same owner |
-| 1440px rendered review | BLOCKED | same owner |
-| Media/focal screenshot integrity | BLOCKED | requires rendered evidence |
-| OLD→NEW comparable rendered proof | PENDING_FUTURE_PHASE | Prompt 2 visual gate / Final QA |
+| Functional Living Index | DONE_VERIFIED | Home + Discover source + rendered QA |
+| Home role implementation | DONE_VERIFIED | rendered 375/768/1440 |
+| Discovery role implementation | DONE_VERIFIED | rendered 375/768/1440 |
+| Residence Detail role implementation | DONE_VERIFIED | rendered 375/768/1440 |
+| Supporting sitemap rollout | DONE_VERIFIED | routes + source |
+| Shared theme/nav/footer migration | DONE_VERIFIED | source + screenshots |
+| Lint | DONE_VERIFIED | GitHub Actions |
+| Production build | DONE_VERIFIED | GitHub Actions |
+| Representative rendered screenshots | DONE_VERIFIED | run 36342111089 artifact |
+| 375px rendered review | DONE_VERIFIED | screenshot inspection |
+| 768px rendered review | DONE_VERIFIED | screenshot inspection |
+| 1440px rendered review | DONE_VERIFIED | screenshot inspection |
+| Media/focal integrity | DONE_VERIFIED | screenshot inspection + P1 remediation |
+| DUE-NOW visual P0/P1 | DONE_VERIFIED | 0 remaining |
+| OLD→NEW comparable rendered proof | PENDING_FUTURE_PHASE | Final QA |
+| Full shared-owner all-route sanity | PENDING_FUTURE_PHASE | Final QA |
 | Accessibility rendered/state QA | PENDING_FUTURE_PHASE | Final QA |
 | Direct user validation | PENDING_FUTURE_PHASE | validation phase |
 | Merge/deploy | N/A_JUSTIFIED | not authorised |
 
 ## Blocker accounting
 
-- DUE-NOW `BLOCKED`: **4 visual-evidence items**
+- DUE-NOW `BLOCKED`: **0**
 - DUE-NOW `UNACCOUNTED`: **0**
-- Technical P0/P1 from lint/build: **0 known**
+- Remaining DUE-NOW P0/P1: **0**
 
-## Prompt 2 exit condition
+## Handoff
 
-To convert Phase 2 from BLOCKED to PASSED:
+Phase 2 is cleared to enter `PROMPT_03_FINAL_QA`.
 
-1. provide an authorised preview/render surface without merging production;
-2. render `/`, `/discover`, `/residences/:id` at 375 / 768 / 1440;
-3. inspect hierarchy, crop, overflow, nav, controls, filter states, image ownership and responsive recomposition;
-4. repair P0/P1 at the root owner;
-5. re-run lint/build;
-6. update this ledger with screenshot evidence.
+Final QA must expand from representative sampling to shared-owner/all-route sanity, interactive-state visibility, accessibility automation + rendered review, and NEW→DESIGN CONTRACT / cross-page consistency.
 
 ## Release status
 
