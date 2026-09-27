@@ -1,0 +1,133 @@
+name: KHOANG Production Smoke
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: khoang-production-smoke
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Smoke public GitHub Pages release
+        env:
+          PRODUCTION_URL: https://ngh1aa.github.io/Sky-Estate/
+        run: |
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          import fs from 'node:fs/promises';
+
+          const base = process.env.PRODUCTION_URL;
+          const routes = [
+            { name: 'home', hash: '#/', h1: /Find a home by how you want to live\./i },
+            { name: 'discover', hash: '#/discover', h1: /Start with how home should feel\./i },
+            { name: 'residence', hash: '#/residences/villa-aurora-thao-dien', h1: /Villa\s*·\s*Thảo Điền/i },
+          ];
+          const viewports = [
+            { name: '375', width: 375, height: 812 },
+            { name: '1440', width: 1440, height: 1000 },
+          ];
+
+          await fs.mkdir('production-smoke-artifacts', { recursive: true });
+          const browser = await chromium.launch({ headless: true });
+          const report = [];
+          let failures = 0;
+
+          async function openWithFreshRelease(page, url) {
+            let lastError;
+            for (let attempt = 1; attempt <= 12; attempt += 1) {
+              try {
+                const response = await page.goto(`${url}?release=${Date.now()}`, { waitUntil: 'networkidle', timeout: 30000 });
+                const body = await page.locator('body').innerText();
+                if (response?.ok() && body.includes('KHOẢNG')) return response;
+                lastError = new Error(`attempt ${attempt}: status=${response?.status()} KHOẢNG=${body.includes('KHOẢNG')}`);
+              } catch (error) {
+                lastError = error;
+              }
+              await page.waitForTimeout(5000);
+            }
+            throw lastError ?? new Error('Production release did not become ready');
+          }
+
+          for (const route of routes) {
+            for (const viewport of viewports) {
+              const context = await browser.newContext({ viewport, reducedMotion: 'reduce' });
+              const page = await context.newPage();
+              const consoleErrors = [];
+              const pageErrors = [];
+              page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
+              page.on('pageerror', error => pageErrors.push(error.message));
+
+              const response = await openWithFreshRelease(page, `${base}${route.hash}`);
+              await page.waitForTimeout(500);
+              const diagnostics = await page.evaluate(() => {
+                const root = document.documentElement;
+                const bodyText = document.body.innerText;
+                return {
+                  title: document.title,
+                  h1: document.querySelector('h1')?.textContent?.trim() || '',
+                  h1Count: document.querySelectorAll('h1').length,
+                  hasMain: Boolean(document.querySelector('main')),
+                  hasNav: Boolean(document.querySelector('nav')),
+                  overflow: Math.max(root.scrollWidth, document.body.scrollWidth) - window.innerWidth,
+                  brokenImages: Array.from(document.images).filter(img => img.complete && img.naturalWidth === 0).map(img => img.currentSrc || img.src),
+                  moduleSrc: document.querySelector('script[type="module"]')?.src || '',
+                  oldBrandLeak: /Sky Estate|Aether Lane|Galaxy Home|Aether Peak/i.test(bodyText),
+                };
+              });
+
+              const reasons = [];
+              if (!response.ok()) reasons.push(`HTTP ${response.status()}`);
+              if (!diagnostics.title.includes('KHOẢNG')) reasons.push(`unexpected title: ${diagnostics.title}`);
+              if (!route.h1.test(diagnostics.h1)) reasons.push(`unexpected h1: ${diagnostics.h1}`);
+              if (diagnostics.h1Count !== 1) reasons.push(`expected one h1, got ${diagnostics.h1Count}`);
+              if (!diagnostics.hasMain || !diagnostics.hasNav) reasons.push('missing shared main/nav');
+              if (diagnostics.overflow > 2) reasons.push(`horizontal overflow ${diagnostics.overflow}px`);
+              if (diagnostics.brokenImages.length) reasons.push(`${diagnostics.brokenImages.length} broken image(s)`);
+              if (!diagnostics.moduleSrc.includes('/Sky-Estate/assets/')) reasons.push(`unexpected asset base: ${diagnostics.moduleSrc}`);
+              if (diagnostics.oldBrandLeak) reasons.push('legacy brand/media copy leaked into production body');
+              if (consoleErrors.length) reasons.push(`${consoleErrors.length} console error(s)`);
+              if (pageErrors.length) reasons.push(`${pageErrors.length} page error(s)`);
+
+              const screenshot = `production-smoke-artifacts/${route.name}-${viewport.name}.png`;
+              await page.screenshot({ path: screenshot, fullPage: true });
+              if (reasons.length) failures += 1;
+              report.push({ route: route.hash, viewport, status: response.status(), screenshot, diagnostics, consoleErrors, pageErrors, reasons });
+              await context.close();
+            }
+          }
+
+          await browser.close();
+          await fs.writeFile('production-smoke-artifacts/report.json', JSON.stringify({ productionUrl: base, failures, cases: report.length, report }, null, 2));
+          console.log(JSON.stringify({ productionUrl: base, failures, cases: report.length }, null, 2));
+          if (failures) process.exit(1);
+          NODE
+
+      - name: Upload production smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: khoang-production-smoke
+          path: production-smoke-artifacts
+          retention-days: 30
