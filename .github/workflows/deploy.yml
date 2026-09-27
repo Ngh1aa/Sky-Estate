@@ -33,6 +33,7 @@ jobs:
         run: npm run build
         env:
           VITE_USE_HASH_ROUTER: 'true'
+          VITE_BASE_PATH: '/Sky-Estate/'
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
