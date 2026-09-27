@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { properties } from '../data/properties';
-import { getLivingQualities, getResidenceTitle, livingQualities, qualityDescriptions } from '../data/living';
+import { getLivingQualities, getResidenceTitle, khoangProperties, livingQualities, qualityDescriptions } from '../data/living';
 
 export default function CollectionsPage() {
   return (
@@ -26,8 +25,8 @@ export default function CollectionsPage() {
         <section className="container-main pb-20 md:pb-28">
           <div className="space-y-20 md:space-y-28">
             {livingQualities.slice(0, 8).map((quality, index) => {
-              const matches = properties.filter((property) => getLivingQualities(property).includes(quality)).slice(0, 3);
-              const lead = matches[0] ?? properties[index % properties.length];
+              const matches = khoangProperties.filter((property) => getLivingQualities(property).includes(quality)).slice(0, 3);
+              const lead = matches[0] ?? khoangProperties[index % khoangProperties.length];
               return (
                 <article key={quality} className="border-t border-border pt-5">
                   <div className="page-grid items-start">
