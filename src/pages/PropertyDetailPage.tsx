@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { properties } from '../data/properties';
 import {
   getLivingQualities,
   getResidenceDescription,
   getResidenceTitle,
+  khoangProperties,
   qualityDescriptions,
 } from '../data/living';
 
 export default function PropertyDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const property = properties.find((item) => item.id === id);
+  const property = khoangProperties.find((item) => item.id === id);
   const [currentImage, setCurrentImage] = useState(0);
   const [saved, setSaved] = useState(false);
 
@@ -33,7 +33,7 @@ export default function PropertyDetailPage() {
   const related = useMemo(() => {
     if (!property) return [];
     const currentQualities = getLivingQualities(property);
-    return properties
+    return khoangProperties
       .filter((item) => item.id !== property.id)
       .map((item) => ({ item, score: getLivingQualities(item).filter((quality) => currentQualities.includes(quality)).length }))
       .sort((a, b) => b.score - a.score)
