@@ -54,11 +54,12 @@ jobs:
           const report = [];
           let failures = 0;
 
-          async function openWithFreshRelease(page, url) {
+          async function openWithFreshRelease(page, hash) {
             let lastError;
             for (let attempt = 1; attempt <= 12; attempt += 1) {
               try {
-                const response = await page.goto(`${url}?release=${Date.now()}`, { waitUntil: 'networkidle', timeout: 30000 });
+                const url = `${base}?release=${Date.now()}${hash}`;
+                const response = await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
                 const body = await page.locator('body').innerText();
                 if (response?.ok() && body.includes('KHOẢNG')) return response;
                 lastError = new Error(`attempt ${attempt}: status=${response?.status()} KHOẢNG=${body.includes('KHOẢNG')}`);
@@ -79,7 +80,7 @@ jobs:
               page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
               page.on('pageerror', error => pageErrors.push(error.message));
 
-              const response = await openWithFreshRelease(page, `${base}${route.hash}`);
+              const response = await openWithFreshRelease(page, route.hash);
               await page.waitForTimeout(500);
               const diagnostics = await page.evaluate(() => {
                 const root = document.documentElement;
