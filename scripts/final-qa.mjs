@@ -27,6 +27,17 @@ const report = [];
 const interactionReport = [];
 let hardFailures = 0;
 
+const serializeViolation = (violation) => ({
+  id: violation.id,
+  impact: violation.impact,
+  help: violation.help,
+  nodes: violation.nodes.map((node) => ({
+    target: node.target,
+    html: node.html,
+    failureSummary: node.failureSummary,
+  })),
+});
+
 for (const route of routes) {
   for (const viewport of viewports) {
     const context = await browser.newContext({
@@ -86,8 +97,8 @@ for (const route of routes) {
       ...diagnostics,
       consoleErrors,
       pageErrors,
-      severeA11y: severeA11y.map((v) => ({ id: v.id, impact: v.impact, help: v.help, nodes: v.nodes.length })),
-      moderateA11y: moderateA11y.map((v) => ({ id: v.id, impact: v.impact, help: v.help, nodes: v.nodes.length })),
+      severeA11y: severeA11y.map(serializeViolation),
+      moderateA11y: moderateA11y.map(serializeViolation),
       failureReasons,
     });
 
