@@ -1,71 +1,29 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
 
 export default function NotFoundPage() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <>
       <Helmet>
-        <title>404 — Trang không tìm thấy | Sky Estate</title>
-        <meta name="description" content="Trang bạn tìm kiếm không tồn tại." />
+        <title>404 — KHOẢNG</title>
+        <meta name="description" content="This route is outside the current KHOẢNG prototype." />
       </Helmet>
-
-      <main className="min-h-screen flex items-center justify-center cosmic-bg" id="main-content">
-        <div className="container-main text-center py-20">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="text-[8rem] md:text-[12rem] font-bold gradient-text leading-none mb-4 select-none">
-              404
+      <main id="main-content" className="pt-[72px] min-h-screen flex items-center">
+        <div className="container-main py-24">
+          <div className="page-grid items-end">
+            <div className="col-span-4 md:col-span-5 lg:col-span-7">
+              <p className="utility-label">404 / Outside the index</p>
+              <h1 className="mt-5 text-[clamp(5rem,16vw,14rem)] leading-[0.72]">404</h1>
             </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <h1 className="text-2xl md:text-3xl font-bold text-text-white mb-4">
-              Có vẻ như căn nhà này đã được bán…
-            </h1>
-            <p className="text-md text-muted max-w-md mx-auto mb-8">
-              Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển. 
-              Hãy quay về trang chủ để khám phá thêm bất động sản đẳng cấp.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-wrap justify-center gap-4"
-          >
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-accent to-accent-light text-white font-semibold hover:shadow-glow hover:scale-[1.02] transition-all duration-300"
-              id="404-home-button"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                <path d="M9 22V12h6v10" />
-              </svg>
-              Về trang chủ
-            </Link>
-            <Link
-              to="/listings"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-border-light text-text-bright font-semibold hover:border-accent hover:bg-glass transition-all duration-300"
-              id="404-listings-button"
-            >
-              Xem bất động sản
-            </Link>
-          </motion.div>
+            <div className="col-span-4 md:col-span-3 lg:col-start-9 lg:col-span-4 mt-8 md:mt-0 border-t border-border pt-5">
+              <h2 className="text-2xl leading-tight">There is no residence or note at this route.</h2>
+              <p className="mt-5 text-sm leading-relaxed text-text">Return to Living Discovery or browse the current prototype inventory.</p>
+              <div className="mt-7 flex flex-wrap gap-5">
+                <Link to="/" className="text-sm border-b border-text-bright pb-1 hover:text-accent hover:border-accent">Home →</Link>
+                <Link to="/discover" className="text-sm border-b border-text-bright pb-1 hover:text-accent hover:border-accent">Discover →</Link>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </>

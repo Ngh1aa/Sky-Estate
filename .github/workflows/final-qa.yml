@@ -1,0 +1,59 @@
+name: KHOANG Final QA
+
+on:
+  push:
+    branches: [feature/khoang-phase-2]
+  workflow_dispatch:
+
+jobs:
+  final-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Install browser QA dependencies
+        run: |
+          npm install --no-save playwright@1.55.0 @axe-core/playwright@4.10.2
+          npx playwright install --with-deps chromium
+
+      - name: Start ephemeral preview server
+        run: |
+          nohup npm run preview -- --host 0.0.0.0 --port 4173 > /tmp/khoang-final-preview.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/khoang-final-preview.log
+          exit 1
+
+      - name: Final all-route QA
+        env:
+          QA_BASE_URL: http://127.0.0.1:4173
+        run: node scripts/final-qa.mjs
+
+      - name: Upload final QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: khoang-final-qa
+          path: final-qa-artifacts/
+          if-no-files-found: error
