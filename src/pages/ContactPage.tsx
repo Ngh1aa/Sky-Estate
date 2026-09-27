@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { properties } from '../data/properties';
-import { getLivingQualities, getResidenceTitle, livingQualities, type LivingQuality } from '../data/living';
+import { getLivingQualities, getResidenceTitle, khoangProperties, livingQualities, type LivingQuality } from '../data/living';
 
 export default function ContactPage() {
   const [searchParams] = useSearchParams();
-  const residence = useMemo(() => properties.find((item) => item.id === searchParams.get('residence')), [searchParams]);
+  const residence = useMemo(() => khoangProperties.find((item) => item.id === searchParams.get('residence')), [searchParams]);
   const initialQualities = residence ? getLivingQualities(residence).slice(0, 3) : [];
 
   const [form, setForm] = useState({ name: '', email: '', phone: '', locations: '', budget: '', message: '' });
