@@ -1,15 +1,14 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { properties } from '../data/properties';
-import { getLivingQualities, getResidenceTitle } from '../data/living';
+import { getLivingQualities, getResidenceTitle, khoangProperties } from '../data/living';
 
 export default function ShortlistPage() {
   const [ids, setIds] = useState<string[]>(() => {
     try { return JSON.parse(localStorage.getItem('khoang-shortlist') || '[]'); } catch { return []; }
   });
 
-  const saved = useMemo(() => properties.filter((property) => ids.includes(property.id)), [ids]);
+  const saved = useMemo(() => khoangProperties.filter((property) => ids.includes(property.id)), [ids]);
 
   const remove = (id: string) => {
     const next = ids.filter((item) => item !== id);
