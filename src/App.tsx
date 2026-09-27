@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
+import { Navigate, Routes, Route, useLocation, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/sections/Navbar';
 import Footer from './components/sections/Footer';
@@ -31,6 +31,11 @@ const pageTransition = {
   exit: { opacity: 0 },
   transition: { duration: 0.24 },
 };
+
+function LegacyResidenceRedirect() {
+  const { id } = useParams<{ id: string }>();
+  return <Navigate to={`/residences/${id ?? ''}`} replace />;
+}
 
 export default function App() {
   const location = useLocation();
@@ -68,9 +73,4 @@ export default function App() {
       <Footer />
     </div>
   );
-}
-
-function LegacyResidenceRedirect() {
-  const id = location.pathname.split('/').pop();
-  return <Navigate to={`/residences/${id ?? ''}`} replace />;
 }
