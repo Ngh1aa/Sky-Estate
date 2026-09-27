@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { properties } from '../data/properties';
 import type { PropertyType } from '../data/properties';
 import {
   getLivingQualities,
   getResidenceTitle,
+  khoangProperties,
   livingQualities,
   matchReason,
   type LivingQuality,
@@ -31,7 +31,7 @@ export default function ListingsPage() {
     try { return JSON.parse(localStorage.getItem('khoang-shortlist') || '[]'); } catch { return []; }
   });
 
-  const cities = useMemo(() => [...new Set(properties.map((property) => property.city))].sort(), []);
+  const cities = useMemo(() => [...new Set(khoangProperties.map((property) => property.city))].sort(), []);
 
   const toggleQuality = (quality: LivingQuality) => {
     setSelected((current) => {
@@ -54,7 +54,7 @@ export default function ListingsPage() {
   };
 
   const result = useMemo(() => {
-    let items = properties.map((property) => ({
+    let items = khoangProperties.map((property) => ({
       property,
       score: getLivingQualities(property).filter((quality) => selected.includes(quality)).length,
     }));
