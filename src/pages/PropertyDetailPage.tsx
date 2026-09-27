@@ -16,6 +16,10 @@ export default function PropertyDetailPage() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
+    document.title = property ? `${getResidenceTitle(property)} — KHOẢNG` : 'Residence unavailable — KHOẢNG';
+  }, [property]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
     setCurrentImage(0);
   }, [id]);
